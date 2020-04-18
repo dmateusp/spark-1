@@ -19,21 +19,30 @@ RUN apt-get update && \
     tar xzf "spark-${SPARK_VERSION}-bin-without-hadoop-scala-2.12.tgz" && \
     rm "spark-${SPARK_VERSION}-bin-without-hadoop-scala-2.12.tgz" && \
     mv "spark-${SPARK_VERSION}-bin-without-hadoop-scala-2.12" /usr/spark && \
-    # Spark Thrift Server
-    wget -q "https://repo1.maven.org/maven2/org/apache/spark/spark-hive-thriftserver_2.12/${SPARK_VERSION}/spark-hive-thriftserver_2.12-${SPARK_VERSION}.jar" && \
-    mv "spark-hive-thriftserver_2.12-${SPARK_VERSION}.jar" /usr/spark/jars/ && \
-    # Hive
-    wget -q https://repo1.maven.org/maven2/org/apache/spark/spark-hive_2.12/${SPARK_VERSION}/spark-hive_2.12-${SPARK_VERSION}.jar && \
-    mv "spark-hive_2.12-${SPARK_VERSION}.jar" /usr/spark/jars/ && \
     # Hadoop
     wget -q "https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz" && \
     tar xzf "hadoop-${HADOOP_VERSION}.tar.gz" && \
     rm "hadoop-${HADOOP_VERSION}.tar.gz" && \
     mv "hadoop-${HADOOP_VERSION}" /usr/hadoop && \
+  # Spark Thrift
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/apache/spark/spark-hive_2.12/${SPARK_VERSION}/spark-hive_2.12-${SPARK_VERSION}.jar && \
+    wget -P /usr/spark/jars -q "https://repo1.maven.org/maven2/org/apache/spark/spark-hive-thriftserver_2.12/${SPARK_VERSION}/spark-hive-thriftserver_2.12-${SPARK_VERSION}.jar" && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/apache/thrift/libthrift/0.9.3/libthrift-0.9.3.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/spark-project/hive/hive-metastore/1.2.1.spark2/hive-metastore-1.2.1.spark2.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/spark-project/hive/hive-exec/1.2.1.spark2/hive-exec-1.2.1.spark2.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/spark-project/hive/hive-jdbc/1.2.1.spark2/hive-jdbc-1.2.1.spark2-standalone.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/spark-project/hive/hive-beeline/1.2.1.spark2/hive-beeline-1.2.1.spark2.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/spark-project/hive/hive-cli/1.2.1.spark2/hive-cli-1.2.1.spark2.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/antlr/antlr-runtime/3.4/antlr-runtime-3.4.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/antlr/antlr/2.7.7/antlr-2.7.7.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/datanucleus/datanucleus-core/3.2.10/datanucleus-core-3.2.10.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/datanucleus/datanucleus-rdbms/3.2.9/datanucleus-rdbms-3.2.9.jar && \
+    wget -P /usr/spark/jars -q https://repo1.maven.org/maven2/org/datanucleus/datanucleus-api-jdo/3.2.6/datanucleus-api-jdo-3.2.6.jar && \
     # AWS
-    find /usr/hadoop/share/hadoop/tools/lib/ -name "*aws*" -exec mv {} /usr/spark/jars \; && \
+    find /usr/hadoop/share/hadoop/tools/lib/ -name "*aws*.jar" -exec mv {} /usr/spark/jars \; && \
     # Postgres (Hadoop metastore)
     ln -s /usr/share/java/postgresql-jdbc4.jar /usr/spark/jars/postgresql-jdbc4.jar && \
+    # Cleanup
     apt-get remove -y wget && \
     apt-get autoremove -y && \
     apt-get clean
